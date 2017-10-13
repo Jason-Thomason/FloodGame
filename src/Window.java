@@ -2,7 +2,11 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.util.ArrayList;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -10,22 +14,26 @@ import javax.swing.JPanel;
 public class Window extends JFrame{
 
 	
+	private JPanel topPanel;
+	private JPanel bottomPanel;
 	
-	public Window(int windowWidth, int windowHeight){
+	public Window(int windowWidth, int windowHeight, int topPanelHeight){
 		
 		super("Flood Game");
 		
 		setupWindow(windowWidth, windowHeight);
 		
-		//window will consist of 2 stacked JPanels: top for game board, bottom for JButton inputs
-		//200 was picked as bottom panel height for aesthetics
-		JPanel topPanel = setupPanel(windowWidth, windowHeight-200, Color.black); 
-		JPanel bottomPanel = setupPanel(windowWidth, 200, Color.gray);
+		JPanel topPanel = setupPanel(windowWidth, topPanelHeight, Color.black); 
+
+		int bottomPanelHeight = windowHeight - topPanelHeight;
+		JPanel bottomPanel = setupPanel(windowWidth, bottomPanelHeight, Color.gray);
 		
 		
 		addPanel(topPanel);
 		addPanel(bottomPanel);
-								
+		
+		addEscKey();
+		
 	}
 	
 	private void setupWindow(int windowWidth, int windowHeight){
@@ -48,4 +56,54 @@ public class Window extends JFrame{
 		this.validate();
 	}
 	
+	private void addEscKey() {
+		addKeyListener(new KeyListener() {
+			public void keyPressed(KeyEvent event) {
+				if (event.getKeyCode() == KeyEvent.VK_ESCAPE) {
+					System.exit(0);
+				}				
+		}
+			@Override
+			public void keyReleased(KeyEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+			@Override
+			public void keyTyped(KeyEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+		});
+	}
+	
+	public void addButtonsToBottomPanel(JButton[] buttons) {
+		for(int i = 0; i < buttons.length; i++) {
+			bottomPanel.add(buttons[i]);
+			bottomPanel.validate();
+		}
+	}
+
+	public void paintSquaresOntoTopPanel(Square[][] squares) {
+		for (Square[] s : squares) {
+			for (Square ss : s) {
+				ss.paint(topPanel.getGraphics());
+				topPanel.validate();
+			}
+
+			// In Case paint must be run twice
+			/*for (Square[] s : squares) {
+			for (Square ss : s) {
+				ss.paint(topPanel.getGraphics());
+				topPanel.validate();
+			}*/
+		}
+	}
+	
+	public void paintSquaresOntoTopPanel(ArrayList <Square> squares) {
+		for (Square s : squares) {
+			s.paint(topPanel.getGraphics());
+			topPanel.validate();
+		}
+	}
+
 }

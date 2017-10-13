@@ -18,122 +18,100 @@ public class World {
 	public static Window window;
 	int windowWidth = 500;
 	int windowHeight = 700;
+	int topPanelHeight = 500;
 	
 	public static Color[] colors = { Color.cyan, Color.yellow, Color.green,
 			Color.red };
 	public static String[] colorNames = { "Cyan", "Yellow", "Green", "Red" };
-	public static Square[][] squares;
-	public static JButton[] buttons;
+
+	public static Square[][] squares = new Square[rows][columns];
+	private double squareWidth = windowWidth / columns;
+	private double squareHeight = topPanelHeight / rows;
+	public static JButton[] buttons = new JButton[colors.length];
 
 	public static ArrayList<Square> checkableSquares = new ArrayList<Square>();
-	public static ArrayList<Square> nonOwnedSquares = new ArrayList<Square>();
 	public static ArrayList<Square> ownedSquares = new ArrayList<Square>();
+	public static ArrayList<Square> nonOwnedSquares = new ArrayList<Square>();
+	
 
 	public World() {
-		window = new Window(windowWidth, windowHeight);
+		window = new Window(windowWidth, windowHeight, topPanelHeight);
 		
-		newLevel();
-		
-		window.addKeyListener(new KeyListener() {
-
+		/*window.addKeyListener(new KeyListener() {
 			public void keyPressed(KeyEvent event) {
 				if (event.getKeyCode() == KeyEvent.VK_ESCAPE) {
 					System.exit(0);
-				}
-
-			}
-
+				}				
+		}
 			@Override
 			public void keyReleased(KeyEvent e) {
 				// TODO Auto-generated method stub
 
 			}
-
 			@Override
 			public void keyTyped(KeyEvent e) {
 				// TODO Auto-generated method stub
 
 			}
-
-		});
+		});*/
+		
+		newLevel();
+	
 	}
 
 	public void newLevel() {
-		setupjPanel1();
-		setupjPanel2();
-		paint();
+		initializeSquares();
+		setupButtons(buttons);
+		window.paintSquaresOntoTopPanel(squares);
 	}
 
-	public void setupjPanel1() {
-		squares = new Square[rows][columns];
+	private void initializeSquares() {
 		for (int i = 0; i < squares.length; i++) {
 			for (int t = 0; t < squares[i].length; t++) {
-				squares[i][t] = new Square();
-
 				int c = rand.nextInt(colors.length);
-				squares[i][t].color = colors[c];
-				squares[i][t].width = (double) 500 / columns;
-				squares[i][t].height = (double) 500 / rows;
-				squares[i][t].x = (double) (i * 500 / columns);
-				squares[i][t].y = (double) (t * 500 / rows);
-				if (i == 0 && t == 0) {
-					squares[i][t].owned = true;
-					squares[i][t].checkable = true;
-					ownedSquares.add(squares[i][t]);
-					checkableSquares.add(squares[i][t]);
-				} else {
-					nonOwnedSquares.add(squares[i][t]);
-				}
+				squares[i][t] = new Square(squareWidth, squareHeight, squareWidth * i, squareHeight * t, colors[c]);
+				nonOwnedSquares.add(squares[i][t]);
 			}
-
 		}
+		obtainSquare(squares[0][0]);
 	}
-
-	public void setupjPanel2() {
-		buttons = new JButton[colors.length];
+	
+	private void obtainSquare(Square s) {
+		nonOwnedSquares.remove(s);
+		s.owned = true;
+		ownedSquares.add(s);
+		s.checkable = true;
+		checkableSquares.add(s);
+	}
+	
+	private void setupButtons(JButton[] buttons) {
 		for (int i = 0; i < buttons.length; i++) {
 			buttons[i] = new JButton((String) colorNames[i]);
 			buttons[i].setPreferredSize(new Dimension(100, 100));
-			Window.jPanel2.add(buttons[i]);
-			Window.jPanel2.validate();
 		}
+		window.addButtonsToBottomPanel(buttons);
+		setButtonActions();
+		
+	}
+	
+	private void setButtonActions() {
 		for (final JButton b : buttons) {
 			b.addActionListener(new ActionListener() {
 
 				public void actionPerformed(ActionEvent e) {
 					changeColor(colors[java.util.Arrays.asList(buttons)
 							.indexOf(b)]);
-
 				}
-
 			});
 		}
-	}
-
-	public void paint() {
-		for (Square[] s : squares) {
-			for (Square ss : s) {
-				ss.paint(Window.jPanel1.getGraphics());
-				Window.jPanel1.validate();
-			}
-
-		}
-		for (Square[] s : squares) {
-			for (Square ss : s) {
-				ss.paint(Window.jPanel1.getGraphics());
-				Window.jPanel1.validate();
-			}
-
-		}
-
 	}
 
 	public void changeColor(Color c) {
 		for (Square s : ownedSquares) {
 			s.color = c;
-			s.paint(Window.jPanel1.getGraphics());
-			Window.jPanel1.validate();
 		}
+		window.paintSquaresOntoTopPanel(ownedSquares);
+		getNewSquares();
 		boolean disconnected = false;
 		while (!disconnected) {
 			for (int i = 0; i < checkableSquares.size(); i++) {
@@ -198,5 +176,25 @@ public class World {
 			}
 		}
 	}
-
+	
+	private void getNewSquares() {
+		for (Square s : checkableSquares) {
+			for (Square ss : nonOwnedSquares) {
+				if(squaresAreObtainableMatch(s, ss)) {
+					obtainSquare(ss);
+				}
+			}
+		}
+	}
+	
+	private boolean squaresAreObtainableMatch(Square s, Square ss) {
+		if(Math.abs(s.getColumn() - ss.getColumn()) == 1 &&  s.getRow() == ss.getRow()) {
+			return true;
+		}else if (Math.abs(s.getRow() - ss.getRow()) == 1 && s.getColumn() == ss.getColumn()){
+			return true;
+		}else {
+			return false;
+		}
+}
+	
 }
