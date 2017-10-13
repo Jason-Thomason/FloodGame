@@ -9,37 +9,43 @@ import javax.swing.JPanel;
 
 public class Window extends JFrame{
 
-	public static int width = 500, height = 700;
-	public static JPanel jPanel1 = new JPanel();
-	public static JPanel jPanel2 = new JPanel();
 	
-	public Window(){
+	
+	public Window(int windowWidth, int windowHeight){
+		
 		super("Flood Game");
 		
-		setupWindow();
-		setupPanels();
+		setupWindow(windowWidth, windowHeight);
 		
+		//window will consist of 2 stacked JPanels: top for game board, bottom for JButton inputs
+		//200 was picked as bottom panel height for aesthetics
+		JPanel topPanel = setupPanel(windowWidth, windowHeight-200, Color.black); 
+		JPanel bottomPanel = setupPanel(windowWidth, 200, Color.gray);
+		
+		
+		this.addPanel(topPanel);
+		this.addPanel(bottomPanel);
+								
 	}
 	
-	private void setupWindow(){
-		this.setSize(width, height);
+	private void setupWindow(int windowWidth, int windowHeight){
+		this.setSize(windowWidth, windowHeight);
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setUndecorated(true);
 		this.setVisible(true);
 	}
 	
-	private void setupPanels(){
-		jPanel1.setBackground(Color.black);
-		jPanel1.setPreferredSize(new Dimension(500, 500));
-		this.add(jPanel1);
-		this.validate();
-		
-		jPanel2.setBackground(Color.gray);
-		jPanel2.setPreferredSize(new Dimension(500, 200));
-		this.add(jPanel2, BorderLayout.SOUTH);
-		this.validate();
+	private JPanel setupPanel(int panelWidth, int panelHeight, Color backgroundColor){
+		JPanel panel = new JPanel();
+		panel.setBackground(backgroundColor);
+		panel.setPreferredSize(new Dimension(panelWidth, panelHeight));
+		return panel;
 	}
 	
+	private void addPanel(JPanel panel){
+		this.add(panel);
+		this.validate();
+	}
 	
 }

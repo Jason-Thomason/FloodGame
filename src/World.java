@@ -16,6 +16,9 @@ public class World {
 	public static int rows = 50, columns = 50;
 
 	public static Window window;
+	int windowWidth = 500;
+	int windowHeight = 700;
+	
 	public static Color[] colors = { Color.cyan, Color.yellow, Color.green,
 			Color.red };
 	public static String[] colorNames = { "Cyan", "Yellow", "Green", "Red" };
@@ -27,8 +30,10 @@ public class World {
 	public static ArrayList<Square> ownedSquares = new ArrayList<Square>();
 
 	public World() {
-		window = new Window();
+		window = new Window(windowWidth, windowHeight);
+		
 		newLevel();
+		
 		window.addKeyListener(new KeyListener() {
 
 			public void keyPressed(KeyEvent event) {
