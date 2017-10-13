@@ -23,8 +23,8 @@ public class Window extends JFrame{
 		JPanel bottomPanel = setupPanel(windowWidth, 200, Color.gray);
 		
 		
-		this.addPanel(topPanel);
-		this.addPanel(bottomPanel);
+		addPanel(topPanel);
+		addPanel(bottomPanel);
 								
 	}
 	
