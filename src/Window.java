@@ -23,10 +23,10 @@ public class Window extends JFrame{
 		
 		setupWindow(windowWidth, windowHeight);
 		
-		JPanel topPanel = setupPanel(windowWidth, topPanelHeight, Color.black); 
+		topPanel = setupPanel(windowWidth, topPanelHeight, Color.black); 
 
 		int bottomPanelHeight = windowHeight - topPanelHeight;
-		JPanel bottomPanel = setupPanel(windowWidth, bottomPanelHeight, Color.gray);
+		bottomPanel = setupPanel(windowWidth, bottomPanelHeight, Color.gray);
 		
 		
 		addPanel(topPanel);
