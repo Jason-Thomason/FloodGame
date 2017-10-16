@@ -2,26 +2,28 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 //import ColumnRowID.java;
 
 public class Square {
 
 	public double width, height, x, y;
 	public Color color;
-	public boolean owned = false, checkable = true;
+	public boolean owned = false, checkable = false;
 	public ColumnRowID columnRowID;
+	public ArrayList <Square> neighbors = new ArrayList<Square>();
 
-	public Square(double width, double height, double x, double y, Color c) {
+	public Square(double width, double height, int columnNumber, int rowNumber, Color c) {
 		this.width = width;
 		this.height = height;
-		this.x = x;
-		this.y =y;
+		columnRowID = new ColumnRowID(columnNumber, rowNumber);
+		setCoordinates();
 		this.color = c;
 	}
 	
-	public void setColumnRowID(int columnNumber, int rowNumber) {
-		columnRowID.columnNumber = columnNumber;
-		columnRowID.rowNumber = rowNumber;
+	private void setCoordinates(){
+		this.x = columnRowID.columnNumber * width;
+		this.y = columnRowID.rowNumber * height;
 	}
 	
 	public int getColumn() {
@@ -30,6 +32,10 @@ public class Square {
 	
 	public int getRow() {
 		return columnRowID.rowNumber;
+	}
+	
+	public void addNeighbor(Square s){
+		neighbors.add(s);
 	}
 
 	public void paint(Graphics g) {
