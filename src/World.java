@@ -33,14 +33,36 @@ public class World {
 
 	public World() {
 		window = new Window(windowWidth, windowHeight, topPanelHeight);
-
+		setupButtons(buttons);
+		
 		newLevel();
 
+	}
+	
+	private void setupButtons(JButton[] buttons) {
+		for (int i = 0; i < buttons.length; i++) {
+			buttons[i] = new JButton((String) colorNames[i]);
+			buttons[i].setPreferredSize(new Dimension(100, 100));
+		}
+		window.addButtonsToBottomPanel(buttons);
+		setButtonActions();
+
+	}
+	
+	private void setButtonActions() {
+		for (final JButton b : buttons) {
+			b.addActionListener(new ActionListener() {
+
+				public void actionPerformed(ActionEvent e) {
+					changeColor(colors[java.util.Arrays.asList(buttons)
+							.indexOf(b)]);
+				}
+			});
+		}
 	}
 
 	public void newLevel() {
 		initializeSquares();
-		setupButtons(buttons);
 		window.paintSquaresOntoTopPanel(squares);
 	}
 
@@ -87,7 +109,7 @@ public class World {
 					s.addNeighbor(squares[i][t + 1]);
 
 				} catch (Exception e) {
-					// Out of bounds exception
+					
 				}
 			}
 		}
@@ -98,28 +120,6 @@ public class World {
 		ownedSquares.add(s);
 		s.checkable = true;
 		checkableSquares.add(s);
-	}
-
-	private void setupButtons(JButton[] buttons) {
-		for (int i = 0; i < buttons.length; i++) {
-			buttons[i] = new JButton((String) colorNames[i]);
-			buttons[i].setPreferredSize(new Dimension(100, 100));
-		}
-		window.addButtonsToBottomPanel(buttons);
-		setButtonActions();
-
-	}
-
-	private void setButtonActions() {
-		for (final JButton b : buttons) {
-			b.addActionListener(new ActionListener() {
-
-				public void actionPerformed(ActionEvent e) {
-					changeColor(colors[java.util.Arrays.asList(buttons)
-							.indexOf(b)]);
-				}
-			});
-		}
 	}
 
 	public void changeColor(Color c) {
